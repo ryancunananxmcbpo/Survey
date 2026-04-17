@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Employee Questionnaire</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f3ef;
+      --surface: #ffffff;
+      --primary: #1a3a2a;
+      --accent: #4a7c59;
+      --accent-light: #e8f0eb;
+      --text: #1c1c1c;
+      --text-muted: #6b7280;
+      --border: #ddd8d0;
+      --border-focus: #4a7c59;
+      --error: #c0392b;
+      --radius: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+    }
+
+    .wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--primary);
+      color: #fff;
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 40px 48px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -30px; right: -30px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .header-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #a8c4b0;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .header p {
+      font-size: 14px;
+      color: #c5d8cb;
+      line-height: 1.6;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      padding: 36px 48px;
+      border: 1px solid var(--border);
+      border-top: none;
+    }
+    .card:last-of-type {
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--accent-light);
+    }
+
+    /* ── Likert Question ── */
+    .question-block {
+      margin-bottom: 32px;
+    }
+    .question-block:last-child { margin-bottom: 0; }
+
+    .question-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .question-num {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    /* Likert scale */
+    .likert {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .likert input[type="radio"] { display: none; }
+    .likert label {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 14px;
+      transition: all 0.15s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .likert label:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-light);
+    }
+    .likert input[type="radio"]:checked + label {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* ── Source checkboxes ── */
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .source-grid input[type="radio"] { display: none; }
+    .source-grid label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: all 0.15s;
+    }
+    .source-grid label::before {
+      content: '';
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .source-grid label:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .source-grid label:hover::before { border-color: var(--accent); }
+    .source-grid input[type="radio"]:checked + label {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--accent-light);
+      font-weight: 500;
+    }
+    .source-grid input[type="radio"]:checked + label::before {
+      border-color: var(--primary);
+      background: var(--primary);
+      box-shadow: inset 0 0 0 3px #fff;
+    }
+
+    /* ── Textarea ── */
+    textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: #faf9f7;
+      resize: vertical;
+      min-height: 110px;
+      transition: border-color 0.15s;
+      outline: none;
+    }
+    textarea:focus { border-color: var(--border-focus); background: #fff; }
+    textarea::placeholder { color: #b0a99f; }
+
+    /* ── Text input ── */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .field-row.full { grid-template-columns: 1fr; }
+    .field-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .field-group input[type="text"],
+    .field-group input[type="date"],
+    .field-group select {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: #faf9f7;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+    }
+    .field-group input:focus,
+    .field-group select:focus { border-color: var(--border-focus); background: #fff; }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    /* ── Submit button ── */
+    .submit-wrap {
+      display: flex;
+      justify-content: flex-end;
+      padding: 24px 48px 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    button[type="submit"] {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 36px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+    button[type="submit"]:hover { background: var(--accent); }
+    button[type="submit"]:active { transform: scale(0.98); }
+
+    /* ── Success banner ── */
+    #successBanner {
+      display: none;
+      background: var(--accent-light);
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 20px 28px;
+      margin-top: 20px;
+      color: var(--primary);
+      font-weight: 500;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    /* ── Required star ── */
+    .req { color: var(--error); margin-left: 2px; }
+
+    @media (max-width: 600px) {
+      .header, .card, .submit-wrap { padding-left: 24px; padding-right: 24px; }
+      .field-row { grid-template-columns: 1fr; }
+      .likert { flex-direction: column; }
+      .source-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-tag">XMC BPO / KuddleandCo</div>
+    <h1>Recruitment &amp; Onboarding Survey</h1>
+    <p>Your feedback helps us improve the new hire experience. All responses are confidential.</p>
+  </div>
+
+  <form id="surveyForm" novalidate>
+
+    <!-- Employee Info -->
+    <div class="card">
+      <div class="section-label">Employee Information</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label for="employeeName">Full Name <span class="req">*</span></label>
+          <input type="text" id="employeeName" name="EmployeeName" placeholder="Juan dela Cruz" required />
+        </div>
+        <div class="field-group">
+          <label for="employeeId">Employee ID</label>
+          <input type="text" id="employeeId" name="EmployeeID" placeholder="EMP-0001" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label for="department">Program <span class="req">*</span></label>
+          <input type="text" id="department" name="Program" placeholder="e.g. Operations" required />
+        </div>
+        <div class="field-group">
+          <label for="startDate">Start Date <span class="req">*</span></label>
+          <input type="date" id="startDate" name="StartDate" required />
+        </div>
+      </div>
+    </div>
+
+    <!-- Likert Section -->
+    <div class="card">
+      <div class="section-label">Please rate your agreement with each statement</div>
+
+      <!-- Q1 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">1</span>I was satisfied with the interview process.</div>
+        <div class="likert" role="radiogroup" aria-label="Q1">
+          <input type="radio" id="q1_sa" name="Q1_InterviewSatisfaction" value="Strongly Agree" />
+          <label for="q1_sa">Strongly Agree</label>
+          <input type="radio" id="q1_a" name="Q1_InterviewSatisfaction" value="Agree" />
+          <label for="q1_a">Agree</label>
+          <input type="radio" id="q1_n" name="Q1_InterviewSatisfaction" value="Neither agree nor disagree" />
+          <label for="q1_n">Neither agree nor disagree</label>
+          <input type="radio" id="q1_d" name="Q1_InterviewSatisfaction" value="Disagree" />
+          <label for="q1_d">Disagree</label>
+          <input type="radio" id="q1_sd" name="Q1_InterviewSatisfaction" value="Strongly Disagree" />
+          <label for="q1_sd">Strongly Disagree</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q2 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">2</span>The onboarding process was a pleasant experience.</div>
+        <div class="likert" role="radiogroup" aria-label="Q2">
+          <input type="radio" id="q2_sa" name="Q2_OnboardingExperience" value="Strongly Agree" />
+          <label for="q2_sa">Strongly Agree</label>
+          <input type="radio" id="q2_a" name="Q2_OnboardingExperience" value="Agree" />
+          <label for="q2_a">Agree</label>
+          <input type="radio" id="q2_n" name="Q2_OnboardingExperience" value="Neither agree nor disagree" />
+          <label for="q2_n">Neither agree nor disagree</label>
+          <input type="radio" id="q2_d" name="Q2_OnboardingExperience" value="Disagree" />
+          <label for="q2_d">Disagree</label>
+          <input type="radio" id="q2_sd" name="Q2_OnboardingExperience" value="Strongly Disagree" />
+          <label for="q2_sd">Strongly Disagree</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q3 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">3</span>Assistance was provided at all stages of the Onboarding process.</div>
+        <div class="likert" role="radiogroup" aria-label="Q3">
+          <input type="radio" id="q3_sa" name="Q3_OnboardingAssistance" value="Strongly Agree" />
+          <label for="q3_sa">Strongly Agree</label>
+          <input type="radio" id="q3_a" name="Q3_OnboardingAssistance" value="Agree" />
+          <label for="q3_a">Agree</label>
+          <input type="radio" id="q3_n" name="Q3_OnboardingAssistance" value="Neither agree nor disagree" />
+          <label for="q3_n">Neither agree nor disagree</label>
+          <input type="radio" id="q3_d" name="Q3_OnboardingAssistance" value="Disagree" />
+          <label for="q3_d">Disagree</label>
+          <input type="radio" id="q3_sd" name="Q3_OnboardingAssistance" value="Strongly Disagree" />
+          <label for="q3_sd">Strongly Disagree</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q4 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">4</span>The Onboarding process was overwhelming.</div>
+        <div class="likert" role="radiogroup" aria-label="Q4">
+          <input type="radio" id="q4_sa" name="Q4_OnboardingOverwhelming" value="Strongly Agree" />
+          <label for="q4_sa">Strongly Agree</label>
+          <input type="radio" id="q4_a" name="Q4_OnboardingOverwhelming" value="Agree" />
+          <label for="q4_a">Agree</label>
+          <input type="radio" id="q4_n" name="Q4_OnboardingOverwhelming" value="Neither agree nor disagree" />
+          <label for="q4_n">Neither agree nor disagree</label>
+          <input type="radio" id="q4_d" name="Q4_OnboardingOverwhelming" value="Disagree" />
+          <label for="q4_d">Disagree</label>
+          <input type="radio" id="q4_sd" name="Q4_OnboardingOverwhelming" value="Strongly Disagree" />
+          <label for="q4_sd">Strongly Disagree</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q5 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">5</span>New Hire Orientation provided an overall view of the company.</div>
+        <div class="likert" role="radiogroup" aria-label="Q5">
+          <input type="radio" id="q5_sa" name="Q5_OrientationOverview" value="Strongly Agree" />
+          <label for="q5_sa">Strongly Agree</label>
+          <input type="radio" id="q5_a" name="Q5_OrientationOverview" value="Agree" />
+          <label for="q5_a">Agree</label>
+          <input type="radio" id="q5_n" name="Q5_OrientationOverview" value="Neither agree nor disagree" />
+          <label for="q5_n">Neither agree nor disagree</label>
+          <input type="radio" id="q5_d" name="Q5_OrientationOverview" value="Disagree" />
+          <label for="q5_d">Disagree</label>
+          <input type="radio" id="q5_sd" name="Q5_OrientationOverview" value="Strongly Disagree" />
+          <label for="q5_sd">Strongly Disagree</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q6 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">6</span>My job duties have been clearly defined.</div>
+        <div class="likert" role="radiogroup" aria-label="Q6">
+          <input type="radio" id="q6_sa" name="Q6_JobDutiesClarity" value="Strongly Agree" />
+          <label for="q6_sa">Strongly Agree</label>
+          <input type="radio" id="q6_a" name="Q6_JobDutiesClarity" value="Agree" />
+          <label for="q6_a">Agree</label>
+          <input type="radio" id="q6_n" name="Q6_JobDutiesClarity" value="Neither agree nor disagree" />
+          <label for="q6_n">Neither agree nor disagree</label>
+          <input type="radio" id="q6_d" name="Q6_JobDutiesClarity" value="Disagree" />
+          <label for="q6_d">Disagree</label>
+          <input type="radio" id="q6_sd" name="Q6_JobDutiesClarity" value="Strongly Disagree" />
+          <label for="q6_sd">Strongly Disagree</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Source & Comments -->
+    <div class="card">
+      <div class="section-label">Additional Information</div>
+
+      <!-- Q7 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">7</span>How did you hear about this job opportunity?</div>
+        <div class="source-grid" role="radiogroup" aria-label="Job Source">
+          <input type="radio" id="src_emp" name="Q7_JobSource" value="Current Employee" />
+          <label for="src_emp">Current Employee</label>
+          <input type="radio" id="src_indeed" name="Q7_JobSource" value="Indeed" />
+          <label for="src_indeed">Indeed</label>
+          <input type="radio" id="src_li" name="Q7_JobSource" value="LinkedIn" />
+          <label for="src_li">LinkedIn</label>
+          <input type="radio" id="src_jf" name="Q7_JobSource" value="Job Fair" />
+          <label for="src_jf">Job Fair</label>
+          <input type="radio" id="src_web" name="Q7_JobSource" value="Website" />
+          <label for="src_web">Website</label>
+          <input type="radio" id="src_jb" name="Q7_JobSource" value="Job Board" />
+          <label for="src_jb">Job Board</label>
+          <input type="radio" id="src_other" name="Q7_JobSource" value="Other" />
+          <label for="src_other">Other</label>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q8 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">8</span>Please provide any additional comments about your experience with our company.</div>
+        <textarea id="q8" name="Q8_AdditionalComments" placeholder="Share your thoughts here…"></textarea>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- Q9 -->
+      <div class="question-block">
+        <div class="question-text"><span class="question-num">9</span>What can we do to make the New Hire experience more satisfying?</div>
+        <textarea id="q9" name="Q9_Suggestions" placeholder="Your suggestions are valuable to us…"></textarea>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-wrap">
+      <button type="submit">Submit Response →</button>
+    </div>
+
+  </form>
+
+  <div id="successBanner">✓ &nbsp;Your response has been submitted successfully. Thank you!</div>
+
+</div>
+
+<script>
+  /*
+   * Power Automate Integration Notes:
+   * ----------------------------------
+   * Trigger : "When an HTTP request is received"
+   * Method  : POST
+   * Body    : JSON.stringify(formData)
+   *
+   * Field names (used as SharePoint column internal names):
+   *   EmployeeName, EmployeeID, Department, StartDate,
+   *   Q1_InterviewSatisfaction, Q2_OnboardingExperience,
+   *   Q3_OnboardingAssistance, Q4_OnboardingOverwhelming,
+   *   Q5_OrientationOverview, Q6_JobDutiesClarity,
+   *   Q7_JobSource, Q8_AdditionalComments, Q9_Suggestions
+   *
+   * After the HTTP trigger, add:
+   *   → "Create item" action (SharePoint)
+   *   → Map each triggerBody()?['FieldName'] to the matching column
+   */
+
+  const POWER_AUTOMATE_URL = "https://default4a10795dedc04a878f98324334032c.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e1131972091a4616bcfccbb60eb85367/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wgR7igGv-WJzb6mhcOxdv1UHOiG8-WHvW62wH48Fc8o";
+
+  document.getElementById("surveyForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const btn = form.querySelector("button[type='submit']");
+
+    // Basic validation: required text fields
+    const required = ["EmployeeName", "Program", "StartDate"];
+    let valid = true;
+    required.forEach(name => {
+      const el = form.elements[name];
+      if (!el || !el.value.trim()) {
+        el.style.borderColor = "#c0392b";
+        valid = false;
+      } else {
+        el.style.borderColor = "";
+      }
+    });
+    if (!valid) { alert("Please fill in all required fields marked with *."); return; }
+
+    // Collect all form values
+    const data = {};
+    const fields = [
+      "EmployeeName", "EmployeeID", "Program", "StartDate",
+      "Q1_InterviewSatisfaction", "Q2_OnboardingExperience",
+      "Q3_OnboardingAssistance", "Q4_OnboardingOverwhelming",
+      "Q5_OrientationOverview", "Q6_JobDutiesClarity",
+      "Q7_JobSource", "Q8_AdditionalComments", "Q9_Suggestions"
+    ];
+    fields.forEach(name => {
+      const el = form.elements[name];
+      if (!el) { data[name] = ""; return; }
+      if (el.type === "radio") {
+        // Radio groups: grab checked value
+        const checked = form.querySelector(`input[name="${name}"]:checked`);
+        data[name] = checked ? checked.value : "";
+      } else {
+        data[name] = el.value.trim();
+      }
+    });
+
+    // Add submission timestamp
+    data["SubmittedAt"] = new Date().toISOString();
+
+    btn.disabled = true;
+    btn.textContent = "Submitting…";
+
+    try {
+      // POST to Power Automate HTTP trigger
+      await fetch(POWER_AUTOMATE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        mode: "no-cors" // Power Automate HTTP triggers don't return CORS headers
+      });
+
+      form.style.display = "none";
+      document.getElementById("successBanner").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("Something went wrong. Please try again or contact IT.");
+      btn.disabled = false;
+      btn.textContent = "Submit Response →";
+    }
+  });
+</script>
+</body>
+</html>
