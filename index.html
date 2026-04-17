@@ -312,6 +312,7 @@
 
   <!-- Header -->
   <div class="header">
+    <div class="header-tag">XMC BPO / KuddleandCo</div>
     <h1>Recruitment &amp; Onboarding Survey</h1>
     <p>Your feedback helps us improve the new hire experience. All responses are confidential.</p>
   </div>
@@ -533,7 +534,7 @@
    *   → Map each triggerBody()?['FieldName'] to the matching column
    */
 
-  const POWER_AUTOMATE_URL = "https://default4a10795dedc04a878f98324334032c.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/4d4033b2dc0c4f5f8811c28015036c7f/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=UvylZ5IgJNqSMyJnlveSOgdLRs_c_xRqsPq2hk3rVJs";
+  const POWER_AUTOMATE_URL = "https://default4a10795dedc04a878f98324334032c.e2.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/e1131972091a4616bcfccbb60eb85367/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=wgR7igGv-WJzb6mhcOxdv1UHOiG8-WHvW62wH48Fc8o";
 
   document.getElementById("surveyForm").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -583,21 +584,30 @@
     btn.textContent = "Submitting…";
 
     try {
-      // POST to Power Automate HTTP trigger
-      await fetch(POWER_AUTOMATE_URL, {
+      console.log("Submitting payload:", JSON.stringify(data, null, 2));
+
+      const response = await fetch(POWER_AUTOMATE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-        mode: "no-cors" // Power Automate HTTP triggers don't return CORS headers
+        body: JSON.stringify(data)
+        // no mode: "no-cors" — we need to read the response to catch errors
       });
+
+      const responseText = await response.text();
+      console.log("Response status:", response.status);
+      console.log("Response body:", responseText);
+
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status + ": " + responseText);
+      }
 
       form.style.display = "none";
       document.getElementById("successBanner").style.display = "block";
       window.scrollTo({ top: 0, behavior: "smooth" });
 
     } catch (err) {
-      console.error("Submission error:", err);
-      alert("Something went wrong. Please try again or contact IT.");
+      console.error("Submission error:", err.message);
+      alert("Submission failed:\n\n" + err.message + "\n\nCheck the browser Console (F12) for details.");
       btn.disabled = false;
       btn.textContent = "Submit Response →";
     }
